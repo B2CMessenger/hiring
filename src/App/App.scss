@@ -1,0 +1,33 @@
+body {
+    #header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        box-sizing: border-box;
+        width: 100%;
+        background: rgba(0,0,0,0.66);
+        padding: 4/14*1em 1em;
+    }
+
+    #content {
+        width: 100%;
+        min-height: 100%;
+        overflow: auto;
+        background:
+            linear-gradient(135deg, #130909 0%,rgba(30, 32, 44, 0.906) 20%,rgba(41, 31, 48, 0.769) 34%,
+                rgba(32, 20, 31, 0.514) 45%,rgba(27, 19, 19, 0.42) 60%, rgba(41, 28, 28, 0.212) 76%,
+                rgba(24, 4, 4, 0.063) 91%,rgba(19, 9, 9, 0) 100%) top left/100% 300vh no-repeat ,
+            linear-gradient(0deg, rgba(19, 9, 9, 0) 0%,rgba(30, 32, 44, 0.204) 20%,rgba(41, 31, 48, 0.31) 34%,
+                rgba(32, 20, 31, 0.443) 45%,rgba(27, 19, 19, 0.612) 60%,rgba(41, 28, 28, 0.733) 76%,
+                rgba(24, 4, 4, 0.898) 91%,#130909 100%) top left/100% 300vh no-repeat #130909;
+    }
+
+    #footer {
+        flex: none;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.8);
+    }
+}

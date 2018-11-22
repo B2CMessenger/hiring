@@ -1,0 +1,62 @@
+.messages-view {
+    padding: 3em 1em 7.5em;
+
+    > .message-view {
+        margin-top: 1em;
+    }
+
+    @media(min-width: 750px) {
+        padding: 3.5em 0 3.5em;
+        
+        height: 100vh;
+        box-sizing: border-box;
+
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-content: flex-start;
+
+        > .message-view {
+            margin: 0.5em 1em;
+            max-width: 330px;
+            box-sizing: border-box;
+        }
+    }
+
+    @media(min-width: 1361px) and (max-width: 1500px) {
+        > .message-view {
+            max-width: calc(100vw / 3.8 - 2em);
+        }
+    }
+
+    @media(min-width: 1501px) and (max-width: 1710px) {
+        > .message-view {
+            max-width: 330px;
+        }
+    }
+
+    @media(min-width: 1711px) and (max-width: 1860px) {
+        > .message-view {
+            max-width: calc(100vw / 4.8 - 2em);
+        }
+    }
+
+    @media(min-width: 1861px) and (max-width: 2075px) {
+        > .message-view {
+            max-width: 330px;
+        }
+    }
+
+    @media(min-width: 2076px) and (max-width: 2020px) {
+        > .message-view {
+            max-width: calc(100vw / 5.8 - 2em);
+        }
+    }
+
+    @media(min-width: 2021px) {
+        > .message-view {
+            max-width: calc(100vw / 6.2 - 2em);
+        }
+    }
+}

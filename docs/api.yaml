@@ -1,0 +1,456 @@
+openapi: 3.0.0
+info:
+  version: "1.1"
+  title: 'API для тестового задания'
+  description: 'Hiring test API'
+  
+servers:
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/b2cm/hiring/1.0
+  - description: localhost
+    url: http://localhost:56668
+
+paths:
+  /authorize:
+    post:
+      summary: Регистрация/Авторизация пользователя
+      tags: ['User']
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  minLength: 3
+                  maxLength: 63
+              example: |
+                {
+                  "name": "Vasya"
+                }
+      responses:
+        200:
+          description: "Авторизация прошла успешно: в ответ должен прийти объект с именем пользователя `name` и токеном `token`, который используется для последующих запросов"
+          content:
+            application/json:
+              schema:
+                required:
+                  - name
+                  - token
+                properties:
+                  name:
+                    type: string
+                    description: "Имя пользователя"
+                  token:
+                    type: string
+                    description: "Токен пользователя"
+                example: |
+                  {
+                    "name": "Vasya",
+                    "token": "1"
+                  }
+        422:
+          description: "`422 Unprocessable Entity` - неправильный формат данных. Скорее всего `name` не отвечает требованиям"
+          content:
+            application/json:
+              schema:
+                properties:
+                  field:
+                    type: string
+                    description: "Имя поля, которое содержит в себе ошибку"
+                  message:
+                    type: string
+                    description: "Описание ошибки"
+                example: |
+                  {
+                    "field": "name",
+                    "message": "too short"
+                  }
+  /me:
+    get:
+      summary: Получение информации о себе
+      tags: ['User']
+      security: [Token: []]
+      responses:
+        200:
+          description: "Получение информации о себе: `name` и `token`"
+          content:
+            application/json:
+              schema:
+                required:
+                  - name
+                  - token
+                properties:
+                  name:
+                    type: string
+                    description: "Имя пользователя"
+                  token:
+                    type: string
+                    description: "Токен пользователя"
+                example: |
+                  {
+                    "name": "Vasya",
+                    "token": "1"
+                  }
+        401:
+          description: "`401 Unauthorized` - неправильный токен или он отсутствует."
+          
+  /messages:
+    get:
+      summary: Получение списка сообщений
+      tags: ['Messages']
+      security: [Token: []]
+      responses:
+        200:
+          description: "Сообщения отдаются в виде массива моделей `Message`"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Message'
+                example: |
+                  [
+                    {
+                      "id": 1,
+                      "author": "Vasya",
+                      "subject": null,
+                      "text": "Lorem ipsum",
+                      "charge": 0
+                    },
+                    {
+                      "id": 2,
+                      "author": "Petya",
+                      "subject": "Lorem ipsum",
+                      "text": "dolor sit amet, consectetur adipiscing elit",
+                      "charge": 6
+                    }
+                  ]
+        401:
+          description: "`401 Unauthorized` - неправильный токен или он отсутствует."
+    
+    post:
+      summary: Создание нового сообщения
+      tags: ['Messages']
+      security: [Token: []]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageBody'
+              
+      responses:
+        201:
+          description: "В ответе возвращается модель `Message` нового сообщения"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        401:
+          description: "`401 Unauthorized` - неправильный токен или он отсутствует."
+        422:
+          description: "`422 Unprocessable Entity` - неправильный формат данных. Скорее всего `text` не отвечает требованиям по длине"
+          content:
+            application/json:
+              schema:
+                properties:
+                  field:
+                    type: string
+                    description: "Имя поля, которое содержит в себе ошибку"
+                  message:
+                    type: string
+                    description: "Описание ошибки"
+                example: |
+                  {
+                    "field": "text",
+                    "message": "cannot be empty"
+                  }
+  /messages/{id}:
+    parameters:
+    - name: "id"
+      in: path
+      required: true
+      description: "Идентификатор сообщения"
+      schema:
+        type: string
+        
+    get:
+      summary: Получение сообщения
+      tags: ['Messages']
+      security: [Token: []]
+      responses:
+        200:
+          description: "В ответе возвращается модель `Message`"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+              example: |
+                {
+                  "id": 2,
+                  "author": "Petya",
+                  "subject": "Lorem ipsum",
+                  "text": "dolor sit amet, consectetur adipiscing elit",
+                  "charge": 6
+                }
+        401:
+          description: "`401 Unauthorized` - неправильный токен или он отсутствует."
+        404:
+          description: "`404 Not Found` - модель с таким `id` отсутствует."
+    
+    put:
+      summary: Изменение сообщения
+      tags: ['Messages']
+      security: [Token: []]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageBody'
+            example: |
+                {
+                  "subject": "Lorem ipsum new",
+                  "text": "New dolor sit amet, consectetur adipiscing elit"
+                }
+              
+      responses:
+        200:
+          description: "В ответе возвращается модель `Message` нового сообщения"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+              example: |
+                {
+                  "id": 2,
+                  "author": "Petya",
+                  "subject": "Lorem ipsum new",
+                  "text": "New dolor sit amet, consectetur adipiscing elit",
+                  "charge": 6
+                }
+        401:
+          description: "`401 Unauthorized` - неправильный токен или он отсутствует."
+        403:
+          description: "`403 Forbidden` - недостаточно прав для изменения сообщения."
+        404:
+          description: "`404 Not Found` - модель с таким `id` отсутствует."
+        422:
+          description: "`422 Unprocessable Entity` - неправильный формат данных. Скорее всего `text` не отвечает требованиям по длине"
+          content:
+            application/json:
+              schema:
+                properties:
+                  field:
+                    type: string
+                    description: "Имя поля, которое содержит в себе ошибку"
+                  message:
+                    type: string
+                    description: "Описание ошибки"
+                example: |
+                  {
+                    "field": "text",
+                    "message": "too long"
+                  }
+                  
+  /message/delete:
+    post:
+      summary: Удаление сообщения
+      description: "Специально выведено в отдельный путь, чтобы симулировать legacy api"
+      tags: ['Messages']
+      security: [Token: []]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+                - id
+              properties:
+                id:
+                  type: integer
+                  description: "Идентификатор сообщения"
+                  minimum: 1
+                  nullable: false
+              example: |
+                {
+                  "id": 2
+                }
+      responses:
+        204:
+          description: "Сообщение успешно удалено"
+        401:
+          description: "`401 Unauthorized` - неправильный токен или он отсутствует."
+        403:
+          description: "`403 Forbidden` - недостаточно прав для удаления сообщения."
+        404:
+          description: "`404 Not Found` - модель с таким `id` отсутствует."
+        423:
+          description: "`423 Locked` - модель не может быть удалена, т.к. у нее есть `charge`"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Charge'
+  
+  /message/charge_increase:
+    post:
+      summary: Увеличение `charge` сообщение на `1`
+      description: "Специально выведено в отдельный путь, чтобы симулировать legacy api"
+      tags: ['Messages']
+      security: [Token: []]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+                - id
+              properties:
+                id:
+                  type: integer
+                  description: "Идентификатор сообщения"
+                  minimum: 1
+                  nullable: false
+              example: |
+                {
+                  "id": 2
+                }
+      responses:
+        200:
+          description: "Успешно изменен `charge` (Если он был `10`, то он так и останется `10`)"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Charge'
+        401:
+          description: "`401 Unauthorized` - неправильный токен или он отсутствует."
+        404:
+          description: "`404 Not Found` - модель с таким `id` отсутствует."
+          
+  /message/charge_decrease:
+    post:
+      summary: Уменьшение `charge` сообщение на `1`
+      description: "Специально выведено в отдельный путь, чтобы симулировать legacy api"
+      tags: ['Messages']
+      security: [Token: []]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+                - id
+              properties:
+                id:
+                  type: integer
+                  description: "Идентификатор сообщения"
+                  minimum: 1
+                  nullable: false
+              example: |
+                {
+                  "id": 2
+                }
+      responses:
+        200:
+          description: "Успешно изменен `charge` (Если он был `0`, то он так и останется `0`)"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Charge'
+        401:
+          description: "`401 Unauthorized` - неправильный токен или он отсутствует."
+        404:
+          description: "`404 Not Found` - модель с таким `id` отсутствует."
+        
+components:
+  securitySchemes:
+    Token:
+      type: apiKey
+      name: "token"
+      in: header
+      
+  schemas:
+    Charge:
+      required:
+        - charge
+      properties:
+        charge:
+          type: integer
+          description: "Специальное поле для проверки нестандартной логики. Пока `charge` не равно нулю, нельзя удалить сообщения. Сам `charge` можно изменять только на `-1/+1` специальными запросами `/message/charge_increase` и `/message/charge_decrease`"
+          minimum: 0
+          maximum: 10
+          nullable: false
+      example: |
+        {
+          "charge": 1
+        }
+    MessageBody:
+      required:
+        - text
+      properties:
+        subject:
+          type: string
+          description: "Тема сообщения"
+          minLength: 1
+          maxLength: 255
+          default: null
+          nullable: true
+        text:
+          type: string
+          description: "Текст сообщения"
+          minLength: 1
+          maxLength: 255
+          nullable: false
+      example: |
+        {
+          "subject": null,
+          "text": "Lorem ipsum"
+        }
+      
+    Message:
+      allOf:
+        - $ref: '#/components/schemas/MessageBody'
+        - $ref: '#/components/schemas/Charge'
+        - type: object
+          required:
+            - id
+            - author
+            - charge
+            - created_at
+            - updated_at
+          properties:
+            id:
+              type: integer
+              minimum: 1
+              nullable: false
+            author:
+              type: string
+              description: "Имя автора"
+              minLength: 3
+              maxLength: 63
+              nullable: false
+            charge:
+              type: integer
+              description: "Специальное поле для проверки нестандартной логики. Пока `charge` не равно нулю, нельзя удалить сообщения. Сам `charge` можно изменять только на `-1/+1` специальными запросами `/message/{id}/charge_increase` и `/message/{id}/charge_decrease`"
+              minimum: 0
+              maximum: 10
+              nullable: false
+            created_at:
+              type: string
+              description: Дата создания
+              format: "yyyy-MM-ddTHH:mm:ssZ"
+              example: "2018-11-22T14:40:50Z"
+            updated_at:
+              type: string
+              description: Дата обновления
+              format: "yyyy-MM-ddTHH:mm:ssZ"
+              example: "2018-11-22T14:40:55Z"
+          example: |
+            {
+              "id": 1,
+              "author": "Vasya",
+              "subject": null,
+              "text": "Lorem ipsum",
+              "charge": 0
+            }

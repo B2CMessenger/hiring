@@ -1,0 +1,68 @@
+{
+  "_from": "git+https://github.com/B2CMessenger/backbone.git",
+  "_id": "@say2b/backbone@0.0.3",
+  "_inBundle": false,
+  "_integrity": "",
+  "_location": "/@say2b/backbone",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "git",
+    "raw": "https://github.com/B2CMessenger/backbone.git",
+    "rawSpec": "https://github.com/B2CMessenger/backbone.git",
+    "saveSpec": "git+https://github.com/B2CMessenger/backbone.git",
+    "fetchSpec": "https://github.com/B2CMessenger/backbone.git",
+    "gitCommittish": null
+  },
+  "_requiredBy": [
+    "#DEV:/",
+    "#USER"
+  ],
+  "_resolved": "git+https://github.com/B2CMessenger/backbone.git#c4bc6bb32af712207645dbb7d7fecc83ed91677c",
+  "_spec": "https://github.com/B2CMessenger/backbone.git",
+  "_where": "C:\\Users\\Slava\\Projects\\@say2b\\hiring",
+  "author": {
+    "name": "Vyacheslav Dorzhiev",
+    "email": "contact@vyacheslavdorzhiev.pro",
+    "url": "https://github.com/B2CMessenger"
+  },
+  "bugs": {
+    "url": "https://github.com/B2CMessenger/backbone/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "backbone": "^1.3.3",
+    "backbone.epoxy": "git+https://github.com/sanperrier/backbone.epoxy.git#1.5.15",
+    "backbone.marionette": "^2.4.7",
+    "underscore": "^1.9.1"
+  },
+  "deprecated": false,
+  "description": "epoxied backbone with marionette and 11 herbs and spices",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.25.0",
+    "babel-preset-es2015": "^6.24.1",
+    "blue-tape": "^1.0.0"
+  },
+  "homepage": "https://github.com/B2CMessenger/backbone#readme",
+  "keywords": [
+    "say2b",
+    "b2cmessenger",
+    "backbone",
+    "marionette",
+    "epoxy"
+  ],
+  "license": "MIT",
+  "main": "lib/backbone.say2b.js",
+  "module": "src/index.js",
+  "name": "@say2b/backbone",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/B2CMessenger/backbone.git"
+  },
+  "scripts": {
+    "build": "babel src --out-dir lib",
+    "clean": "rimraf lib",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "0.0.3"
+}
