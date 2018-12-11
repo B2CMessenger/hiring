@@ -336,6 +336,17 @@
 
 Покрытие тестами не требуется. Но желательно.
 
+# Порядок публикации решения
+
+1. Создаем репозиторий на гитхабе, куда будет опубликовано решение (например, `https://github.com/B2CMessenger/hiring_solution`)
+2. Теперь надо в папке с проектом обновить `remotes` для `git`:
+   1. `git remote rename origin upstream` - переименовываем `origin` в `upstream`
+   2. `git remote set-url --push upstream DISABLE` - запрещаем пуш в `upstream`
+   3. `git remote add origin https://github.com/B2CMessenger/hiring_solution.git` - добавляем свой репозиторий как `origin`
+3. `git push origin` - пушим в свой репозиторий решение
+4. Присылаем нам ссылку на свой репозиторий с решение
+5. Также надо время от времени проверять обновления `upstream` и либо ребейзить, либо мержить эти обновления
+
 # Вспомогательная информация по фреймворку `@say2b/backbone`
 
 Разберем самые частоиспользуемые возможности `@say2b/backbone` на примере виджета `CustomView`:
