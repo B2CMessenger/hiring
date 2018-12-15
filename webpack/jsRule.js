@@ -9,8 +9,7 @@ module.exports = {
             options: {
                 presets: [['@babel/preset-env', {
                     targets: {
-                        chrome: 53,
-                        ios: 10
+                        chrome: 70,
                     },
                     modules: false,
                     debug: mode == 'development',
