@@ -21,6 +21,8 @@ test(
 
             app.start();
 
+            await waitRequest(requests).catch(e => { if (e != 'timed out') throw e; });
+
             t.equal(requests.length, 0,
                 'no requests if localStorage has no `userName`');
             t.equal(app.userModel.get('isLoggedIn'), false,
@@ -171,8 +173,8 @@ test(
 );
 
 test(
-    '[Acceptance] [App] if `App.userModel["isLoggedIn"]` changes to `false` then `App` should remove `EditorView`' +
-    ' from `footer` region [3pts]',
+    '[Acceptance] [App] if `App.userModel["isLoggedIn"]` changes to `false` then `App` should remove or hide ' +
+    '`EditorView` from `footer` region [3pts]',
     async t => {
         const xhr = sinon.useFakeXMLHttpRequest();
         try {
@@ -199,8 +201,8 @@ test(
             t.equal(app.userModel.get('isLoggedIn'), false,
                 'App.userModel["isLoggedIn"] is `false`');
 
-            t.notOk(app.getRegion('footer').currentView,
-                '`footer` region has `EditorView`');
+            t.ok(!app.getRegion('footer').currentView || !app.getRegion('footer').currentView.$el.is(':visible'), 
+                '`footer` region has no `EditorView` or it is hidden');
 
             app.destroy();
         } finally {
@@ -266,7 +268,7 @@ test('[Acceptance] [App] on `add@UserPanelView` event `App` should show `EditorV
     }
 );
 
-test('[Acceptance] [App] on `edit@MessagesView` event `App` should show `EditorView` with `MessageModel` of this' +
+test('[Acceptance] [App] if user clicks on `Edit` `App` should show `EditorView` with `MessageModel` of this' +
     ' particular message in `footer` region [5pts]',
     async t => {
         const xhr = sinon.useFakeXMLHttpRequest();
@@ -300,7 +302,9 @@ test('[Acceptance] [App] on `edit@MessagesView` event `App` should show `EditorV
             await waitEvent(app.messageCollection, 'sync');
 
             const messageView = app.getRegion('content').currentView.children.find(v => v.model.id == 1);
-            messageView.trigger('edit', messageView.model);
+            _.defer(() => messageView.$el.find('[data-js-edit]').click());
+
+            await waitEvent(messageView, 'edit').catch(e => { if (e != 'timed out') throw e });
 
             const editorView = app.getRegion('footer').currentView;
             t.ok(editorView instanceof EditorView,
@@ -311,7 +315,7 @@ test('[Acceptance] [App] on `edit@MessagesView` event `App` should show `EditorV
             t.deepEqual(editorModel.toJSON(), messageView.model.toJSON(),
                 '`editorView.model` is `messageModel` of existing message');
             
-            messageView.trigger('edit', messageView.model);
+            await waitEvent(messageView, 'edit').catch(e => { if (e != 'timed out') throw e });
             await nextTick();
 
             t.equal(app.getRegion('footer').currentView, editorView,
@@ -369,9 +373,9 @@ test('[Acceptance] [App] on if user edits existing message then deletes it `Edit
             _.defer(() => messageView.$el.find('[data-js-delete]').click());
             await waitEvent(messageView.model, 'destroy');
 
-            t.notOk(app.getRegion('footer').currentView,
+            t.ok(!app.getRegion('footer').currentView || !app.getRegion('footer').currentView.$el.is(':visible'),
                 'if message was deleted editor with that message should be destroyed');
-
+            
             app.destroy();
         } finally {
             xhr.restore();

@@ -1,6 +1,6 @@
 {
   "name": "@say2b/hiring",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Тестовое задание",
   "main": "www/index.js",
   "module": "src/index.js",

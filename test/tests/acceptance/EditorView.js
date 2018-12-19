@@ -144,7 +144,7 @@ test('[Acceptance] [EditorView] edit existing message [16pts]',
             await nextTick();
 
             const messageModel = app.getRegion('content').currentView.children.find(v => v.model.id == 1).model;
-            app.getRegion('content').currentView.children.find(v => v.model.id == 1).trigger('edit', messageModel);
+            app.getRegion('content').currentView.children.find(v => v.model.id == 1).$el.find('[data-js-edit]').click();
             await nextTick();
 
             const editorView = app.getRegion('footer').currentView;
